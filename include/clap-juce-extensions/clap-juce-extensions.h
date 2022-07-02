@@ -89,6 +89,13 @@ struct clap_juce_audio_processor_capabilities
         return CLAP_PROCESS_CONTINUE;
     }
 
+    /**
+     * Allows the plugin to implement "reset" behaviour,
+     * as defined in the CLAP plugin spec.
+     */
+    virtual bool supportsDirectReset() { return false; }
+    virtual void clap_direct_reset() noexcept {}
+
     /*
      * Do I support the CLAP_NOTE_DIALECT_CLAP? And prefer it if so? By default this
      * is true if I support either note expressions, direct processing, or voice info,

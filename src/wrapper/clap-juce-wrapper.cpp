@@ -489,6 +489,8 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
         return true;
     }
 
+    void deactivate() noexcept override { processor->releaseResources(); }
+
     /* CLAP API */
 
     void defineAudioPorts()
@@ -1005,6 +1007,12 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
             midiBuffer.clear();
 
         return CLAP_PROCESS_CONTINUE;
+    }
+
+    void reset() noexcept override
+    {
+        if (processorAsClapExtensions && processorAsClapExtensions->supportsDirectReset())
+            return processorAsClapExtensions->clap_direct_reset();
     }
 
     void componentMovedOrResized(juce::Component &component, bool wasMoved,
