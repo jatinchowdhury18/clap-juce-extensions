@@ -227,6 +227,10 @@ struct clap_juce_audio_processor_capabilities
             noteNamesChangedSignal();
     }
 
+    virtual bool supportsContextMenu() const noexcept { return false; }
+    virtual bool populateContextMenu() const noexcept { return false; }
+    virtual bool performContextMenuAction() const noexcept { return false; }
+
     /** If your plugin supports remote controls, then override this method to return true. */
     virtual bool supportsRemoteControls() const noexcept { return false; }
 

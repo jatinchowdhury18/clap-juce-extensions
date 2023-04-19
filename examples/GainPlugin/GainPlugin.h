@@ -38,6 +38,8 @@ class GainPlugin : public juce::AudioProcessor,
     void getStateInformation(juce::MemoryBlock &data) override;
     void setStateInformation(const void *data, int sizeInBytes) override;
 
+    bool supportsContextMenu() const noexcept override { return true; }
+
     juce::String getPluginTypeString() const;
     auto *getGainParameter() { return gainDBParameter; }
     auto &getValueTreeState() { return vts; }

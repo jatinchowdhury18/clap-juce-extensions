@@ -218,8 +218,7 @@ class EditorContextMenu : public juce::HostProvidedContextMenu
             }
             else if (item_kind == CLAP_CONTEXT_MENU_ITEM_CHECK_ENTRY)
             {
-                const auto entry =
-                    static_cast<const clap_context_menu_check_entry *>(item_data);
+                const auto entry = static_cast<const clap_context_menu_check_entry *>(item_data);
 
                 juce::PopupMenu::Item item;
                 item.itemID = ++menuIDCounter;
@@ -258,8 +257,7 @@ class EditorContextMenu : public juce::HostProvidedContextMenu
                 menuStack.pop_back();
 
                 // add the sub-menu to the menu one level up
-                menuStack.back().addSubMenu(currentSubMenuLabel, subMenu,
-                                            currentSubMenuEnabled);
+                menuStack.back().addSubMenu(currentSubMenuLabel, subMenu, currentSubMenuEnabled);
             }
             else if (item_kind == CLAP_CONTEXT_MENU_ITEM_TITLE)
             {
@@ -273,7 +271,10 @@ class EditorContextMenu : public juce::HostProvidedContextMenu
         }
 
         // Currently, JUCE supports all the item kinds that CLAP supports!
-        bool supports(clap_context_menu_item_kind_t /*item_kind*/) const noexcept override { return true; }
+        bool supports(clap_context_menu_item_kind_t /*item_kind*/) const noexcept override
+        {
+            return true;
+        }
     };
     MenuBuilder builder{host, &menuTarget};
 };
@@ -1003,6 +1004,25 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
     {
         if (processorAsClapExtensions)
             return processorAsClapExtensions->noteNameGet(index, noteName);
+        return false;
+    }
+
+    bool implementsContextMenu() const noexcept override
+    {
+        if (processorAsClapExtensions)
+            return processorAsClapExtensions->supportsContextMenu();
+        return false;
+    }
+
+    bool contextMenuPopulate(const clap_context_menu_target_t *target,
+                             const clap_context_menu_builder_t *builder) noexcept override
+    {
+        return false;
+    }
+
+    bool contextMenuPerform(const clap_context_menu_target_t *target,
+                            clap_id action_id) noexcept override
+    {
         return false;
     }
 
