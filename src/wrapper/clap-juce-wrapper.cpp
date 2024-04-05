@@ -133,8 +133,6 @@ extern JUCE_API void *attachComponentToWindowRefVST(Component *, void *parentWin
 } // namespace juce
 #endif
 
-JUCE_BEGIN_IGNORE_WARNINGS_MSVC(4996) // allow strncpy
-
 #if !defined(CLAP_MISBEHAVIOUR_HANDLER_LEVEL)
 #define CLAP_MISBEHAVIOUR_HANDLER_LEVEL "Ignore"
 #endif
@@ -894,7 +892,8 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
         };
 
         info->id = getPortID(isInput, index);
-        strncpy(info->name, bus->getName().toRawUTF8(), sizeof(info->name));
+        strncpy_s(info->name, CLAP_NAME_SIZE, bus->getName().toRawUTF8(),
+                  bus->getName().getNumBytesAsUTF8());
 
         bool couldBeMain = true;
         if (isInput && processorAsClapExtensions)
@@ -983,7 +982,8 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
                     info->preferred_dialect = CLAP_NOTE_DIALECT_CLAP;
                 }
             }
-            strncpy(info->name, "JUCE Note Input", CLAP_NAME_SIZE);
+            static constexpr std::string_view inputName = "JUCE Note Input";
+            strncpy_s(info->name, CLAP_NAME_SIZE, inputName.data(), inputName.size());
         }
         else
         {
@@ -1005,7 +1005,8 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
                 }
             }
 
-            strncpy(info->name, "JUCE Note Output", CLAP_NAME_SIZE);
+            static constexpr std::string_view outputName = "JUCE Note Output";
+            strncpy_s(info->name, CLAP_NAME_SIZE, outputName.data(), outputName.size());
         }
         return true;
     }
@@ -1144,9 +1145,9 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
 
         // Fixme - using parameter groups here would be lovely but until then
         info->id = paramID;
-        strncpy(info->name, (paramVariant.processorParam->getName(CLAP_NAME_SIZE)).toRawUTF8(),
-                CLAP_NAME_SIZE);
-        strncpy(info->module, group.toRawUTF8(), CLAP_NAME_SIZE);
+        const auto &paramName = paramVariant.processorParam->getName(CLAP_NAME_SIZE);
+        strncpy_s(info->name, CLAP_NAME_SIZE, paramName.toRawUTF8(), paramName.getNumBytesAsUTF8());
+        strncpy_s(info->module, CLAP_NAME_SIZE, group.toRawUTF8(), group.getNumBytesAsUTF8());
 
 #if CLAP_USE_JUCE_PARAMETER_RANGES != CLAP_USE_JUCE_PARAMETER_RANGES_OFF
         // For discrete parameters, JUCE uses ranges [0, N], so we'll report that
@@ -1221,7 +1222,7 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
         if (!usingLegacyParameterAPI)
         {
             auto res = pbi.processorParam->getText((float)value, (int)size);
-            strncpy(display, res.toStdString().c_str(), size);
+            strncpy_s(display, size, res.toStdString().c_str(), size);
         }
         else
         {
@@ -1230,7 +1231,7 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
              * event that the JUCE parameter mode is more or less like a VST2
              */
             auto res = pbi.processorParam->getCurrentValueAsText();
-            strncpy(display, res.toStdString().c_str(), size);
+            strncpy_s(display, size, res.toStdString().c_str(), size);
         }
 
         return true;
@@ -2208,8 +2209,6 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
     const clap_event_transport *transportInfo{nullptr};
     bool hasTransportInfo{false};
 };
-
-JUCE_END_IGNORE_WARNINGS_MSVC
 
 const char *features[] = {CLAP_FEATURES, nullptr};
 clap_plugin_descriptor ClapJuceWrapper::desc = {CLAP_VERSION,
