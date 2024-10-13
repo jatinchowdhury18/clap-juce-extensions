@@ -336,6 +336,15 @@ struct clap_juce_audio_processor_capabilities
         return nullptr;
     }
 
+    const clap_host *getHost()
+    {
+        if (clapHostStatic != nullptr)
+            return clapHostStatic;
+        if (hostGet)
+            return hostGet();
+        return nullptr;
+    }
+
   private:
     friend class ::ClapJuceWrapper;
     std::function<void(const clap_event_param_value *)> parameterChangeHandler = nullptr;
@@ -349,6 +358,7 @@ struct clap_juce_audio_processor_capabilities
     std::function<void(uint32_t location_kind, const char *location, const char *load_key)>
         onPresetLoaded = nullptr;
     std::function<const void *(const char *)> extensionGet = nullptr;
+    std::function<const clap_host *()> hostGet = nullptr;
 
     friend const clap_plugin *ClapAdapter::clap_create_plugin(const struct clap_plugin_factory *,
                                                               const clap_host *, const char *);

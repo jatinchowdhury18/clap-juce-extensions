@@ -462,6 +462,9 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
             processorAsClapExtensions->extensionGet = [this](const char *name) {
                 return _host.host()->get_extension(_host.host(), name);
             };
+            processorAsClapExtensions->hostGet = [this]() {
+                return _host.host();
+            };
         }
 
         const bool forceLegacyParamIDs = false;
