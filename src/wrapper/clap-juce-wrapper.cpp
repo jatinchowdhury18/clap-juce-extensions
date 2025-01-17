@@ -565,7 +565,7 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
 #endif
     }
 
-#if HAS_LINUX_FD 
+#if HAS_LINUX_FD
     std::vector<int> registeredFDs;
     void fdCallbacksChanged() override
     {
