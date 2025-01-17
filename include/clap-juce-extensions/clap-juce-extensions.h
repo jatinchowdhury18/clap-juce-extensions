@@ -316,6 +316,21 @@ struct clap_juce_audio_processor_capabilities
             onPresetLoaded(location_kind, location, load_key);
     }
 
+    virtual bool supportsThreadPool() const noexcept { return false; }
+    virtual void threadPoolExec (uint32_t /*task_index*/) noexcept {}
+    bool threadPoolRequestExec (uint32_t num_tasks) noexcept
+    {
+        if (threadPoolRequestExecSignal == nullptr)
+            return false;
+        return threadPoolRequestExecSignal (num_tasks);
+    }
+
+    // virtual bool supportsDirectParamsFlush() { return false; }
+    // virtual void clap_direct_paramsFlush(const clap_input_events * /*in*/,
+    //                                      const clap_output_events * /*out*/) noexcept
+    // {
+    // }
+
     /*
      * If you are working with a host that chooses to not implement cookies you will
      * need to look up parameters by param_id. Use this method to do so.
@@ -348,6 +363,7 @@ struct clap_juce_audio_processor_capabilities
         onPresetLoadError = nullptr;
     std::function<void(uint32_t location_kind, const char *location, const char *load_key)>
         onPresetLoaded = nullptr;
+    std::function<bool(uint32_t)> threadPoolRequestExecSignal = nullptr;
     std::function<const void *(const char *)> extensionGet = nullptr;
 
     friend const clap_plugin *ClapAdapter::clap_create_plugin(const struct clap_plugin_factory *,

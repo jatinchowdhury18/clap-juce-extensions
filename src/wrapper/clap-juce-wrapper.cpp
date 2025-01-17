@@ -459,6 +459,12 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
                     if (_host.canUsePresetLoad())
                         _host.presetLoadLoaded(location_kind, location, load_key);
                 };
+            processorAsClapExtensions->threadPoolRequestExecSignal =
+                [this](uint32_t num_tasks) {
+                    if (! _host.canUseThreadPool())
+                        return false;
+                    return _host.threadPoolRequestExec (num_tasks);
+            };
             processorAsClapExtensions->extensionGet = [this](const char *name) {
                 return _host.host()->get_extension(_host.host(), name);
             };
@@ -1037,6 +1043,19 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
             strncpy(info->name, "JUCE Note Output", CLAP_NAME_SIZE);
         }
         return true;
+    }
+
+    bool implementsThreadPool() const noexcept override
+    {
+        if (processorAsClapExtensions)
+            return processorAsClapExtensions->supportsThreadPool();
+        return false;
+    }
+
+    void threadPoolExec(uint32_t task_index) noexcept override
+    {
+        if (processorAsClapExtensions)
+            processorAsClapExtensions->threadPoolExec (task_index);
     }
 
     bool implementsVoiceInfo() const noexcept override
