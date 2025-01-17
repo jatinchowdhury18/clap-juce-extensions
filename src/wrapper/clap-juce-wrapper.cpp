@@ -690,6 +690,7 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
     bool supressParameterChangeMessages{false};
     void audioProcessorParameterChanged(juce::AudioProcessor *, int index, float newValue) override
     {
+#if 0 // PARAM_LISTENERS_ON_MAIN_THREAD
         if (cacheHostCanUseThreadCheck)
         {
             // Parameter change messages should not be coming from the audio thread!
@@ -701,6 +702,7 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
                 return;
             }
         }
+#endif
 
         // This change message came from an event that we've already handled.
         // Let's return here to avoid creating a feedback loop!
@@ -2323,6 +2325,9 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
             // incrementally allocate a 4096 sized block. But try anyway.
             return false;
         }
+
+        if (chunkMemory.isEmpty())
+            return false;
 
         // JUCE has no way to report an unstream error; setStateInformation is void
         // So we just have to assume it works.
