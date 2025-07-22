@@ -1785,7 +1785,7 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
                 }
                 else
                 {
-                    FIXME("Handle bypass and deactivated states")
+                    // FIXME("Handle bypass and deactivated states")
                     processor->processBlock(buffer, midiBuffer);
                 }
             }
@@ -2128,7 +2128,7 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
             }
         }
 
-        void paint(juce::Graphics &g) override { g.fillAll(juce::Colours::red); }
+        void paint(juce::Graphics &g) override { g.fillAll(juce::Colours::black); }
         void resized() override
         {
             if (editor != nullptr)
