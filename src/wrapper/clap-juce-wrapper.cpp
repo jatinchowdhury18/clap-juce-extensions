@@ -25,6 +25,7 @@
 #include <juce_audio_plugin_client/detail/juce_IncludeSystemHeaders.h>
 #include <juce_audio_plugin_client/detail/juce_PluginUtilities.h>
 #include <juce_audio_plugin_client/detail/juce_VSTWindowUtilities.h>
+#include <juce_gui_basics/native/juce_WindowsHooks_windows.h>
 #endif
 
 JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE("-Wunused-parameter", "-Wsign-conversion", "-Wfloat-conversion",
@@ -2170,6 +2171,10 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
         std::unique_ptr<juce::AudioProcessorEditor> editor;
 #if JUCE_VERSION >= 0x060008
         std::unique_ptr<juce::AudioProcessorEditorHostContext> editorHostContext;
+#endif
+
+#if JUCE_WINDOWS && JUCE_VERSION >= 0x070006
+        juce::detail::WindowsHooks hooks {};
 #endif
 
       private:
