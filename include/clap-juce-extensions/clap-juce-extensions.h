@@ -362,6 +362,11 @@ struct clap_juce_audio_processor_capabilities
         return nullptr;
     }
 
+    const clap_host *getHost()
+    {
+        return clapHostStatic;
+    }
+
   private:
     friend class ::ClapJuceWrapper;
     std::function<void(const clap_event_param_value *)> parameterChangeHandler = nullptr;
