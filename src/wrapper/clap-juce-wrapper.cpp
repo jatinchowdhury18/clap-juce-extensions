@@ -2455,9 +2455,16 @@ class ClapJuceWrapper : public clap::helpers::Plugin<
 #if JUCE_VERSION < 0x070006
         juce::initialiseMacVST();
         auto hostWindow = juce::attachComponentToWindowRefVST(editorWrapper.get(), nsView, true);
-#else
+#elif JUCE_VERSION < 0x090000
         const auto desktopFlags =
             juce::detail::PluginUtilities::getDesktopFlags(editorWrapper->editor.get());
+        auto hostWindow = juce::detail::VSTWindowUtilities::attachComponentToWindowRefVST(
+            editorWrapper.get(), desktopFlags, nsView);
+#else
+        const auto desktopFlags =
+            juce::detail::PluginUtilities::getDesktopFlagsAndWindowsMultiTouchMode(
+                editorWrapper->editor.get())
+                .desktopFlags;
         auto hostWindow = juce::detail::VSTWindowUtilities::attachComponentToWindowRefVST(
             editorWrapper.get(), desktopFlags, nsView);
 #endif

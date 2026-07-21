@@ -31,6 +31,8 @@ jobs:
             juce_version: 8.0.10
           - os: ubuntu-22.04
             juce_version: 8.0.11
+          - os: ubuntu-22.04
+            juce_version: 9.0.0
 
           - os: windows-latest
             juce_version: 6.1.6
@@ -42,16 +44,20 @@ jobs:
             juce_version: 8.0.10
           - os: windows-latest
             juce_version: 8.0.11
+          - os: windows-latest
+            juce_version: 9.0.0
 
           - os: macOS-latest
             juce_version: 8.0.11
+          - os: macOS-latest
+            juce_version: 9.0.0
 
     steps:
       - name: Install Linux Deps
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt install libasound2-dev libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev libfreetype6-dev libfontconfig1-dev libglu1-mesa-dev libjack-jackd2-dev
+          sudo apt install libasound2-dev libx11-dev libxcomposite-dev libxcursor-dev libxext-dev libxi-dev libxinerama-dev libxrandr-dev libxrender-dev libfreetype6-dev libfontconfig1-dev libglu1-mesa-dev libjack-jackd2-dev
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 11
           sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 11
 
